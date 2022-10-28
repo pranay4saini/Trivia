@@ -1,5 +1,7 @@
 package com.pranay.trivia.model;
 
+import androidx.annotation.NonNull;
+
 public class Question {
 
     private String answer;
@@ -30,6 +32,7 @@ public class Question {
         this.correct_answer = correct_answer;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Question{" +

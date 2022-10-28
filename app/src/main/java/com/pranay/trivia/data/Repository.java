@@ -16,7 +16,7 @@ import java.util.List;
 public class Repository {
     ArrayList<Question> questionArrayList = new ArrayList<>();
         String url = "https://raw.githubusercontent.com/curiousily/simple-quiz/master/script/statements-data.json";
-        String url1 = "https://opentdb.com/api.php?amount=50&type=boolean";
+
     public List<Question> getQuestions(final answerListAsyncResponse callBack){
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest( Request.Method.GET, url, null,
@@ -42,7 +42,7 @@ public class Repository {
 
         });
         AppController.getInstance().addToRequestQueue(jsonArrayRequest);
-
-            return null;
+//https://stackoverflow.com/questions/36433964/showing-error-attempt-to-invoke-interface-method-int-java-util-list-size-on
+            return questionArrayList;
     }
 }
