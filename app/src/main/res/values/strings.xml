@@ -7,4 +7,6 @@
     <string name="next_button">Next</string>
     <string name="Placeholder">This where question will be shown!!!</string>
     <string name="question_text_outof_formated">Question: %d/%d</string>
+    <string name="correct_answer">Correct Answer nigga!!</string>
+    <string name="incorrect_answer">Incorrect answer</string>
 </resources>

@@ -12,6 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.snackbar.Snackbar;
 import com.pranay.trivia.controller.AppController;
 import com.pranay.trivia.data.Repository;
 import com.pranay.trivia.data.answerListAsyncResponse;
@@ -53,13 +54,23 @@ public class MainActivity extends AppCompatActivity {
             updateQuestion();
         });
 
-        binding.falseButton.setOnClickListener(view -> {
+        binding.falseButton.setOnClickListener(view -> checkAnswer(false));
 
-        });
+        binding.trueButton.setOnClickListener(view -> checkAnswer(true));
+    }
 
-        binding.trueButton.setOnClickListener(view -> {
+    private void checkAnswer(boolean userChoice) {
+        boolean answer = questionList.get(currentQuestionIndex).isCorrect_answer();
 
-        });
+        int snackMessageId;
+        if(userChoice == answer){
+            snackMessageId = R.string.correct_answer;
+        }else{
+            snackMessageId = R.string.incorrect_answer;
+        }
+
+        Snackbar.make(binding.cardView,snackMessageId,Snackbar.LENGTH_SHORT)
+                .show();
     }
 
     private void updateCounter(ArrayList<Question> questionArrayList) {
