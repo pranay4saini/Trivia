@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         questionList = new  Repository().getQuestions(questionArrayList ->{
                 binding.questionTextview.setText(questionArrayList.get(currentQuestionIndex).getAnswer());
+                    updateCounter(questionArrayList);
+
+
                 }
         );
 
@@ -59,9 +62,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void updateCounter(ArrayList<Question> questionArrayList) {
+        binding.textViewOutOf.setText(String.format(getString(R.string.question_text_outof_formated), currentQuestionIndex, questionArrayList.size()));
+    }
+
     private void updateQuestion() {
 
         String question = questionList.get(currentQuestionIndex).getAnswer();
         binding.questionTextview.setText(question);
+        updateCounter((ArrayList<Question>) questionList);
     }
 }

@@ -6,4 +6,5 @@
     <string name="false_button">Flase</string>
     <string name="next_button">Next</string>
     <string name="Placeholder">This where question will be shown!!!</string>
+    <string name="question_text_outof_formated">Question: %d/%d</string>
 </resources>
