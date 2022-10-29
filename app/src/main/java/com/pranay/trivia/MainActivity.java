@@ -3,9 +3,14 @@ package com.pranay.trivia;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -54,9 +59,15 @@ public class MainActivity extends AppCompatActivity {
             updateQuestion();
         });
 
-        binding.falseButton.setOnClickListener(view -> checkAnswer(false));
+        binding.falseButton.setOnClickListener(view -> {
+            checkAnswer(false);
+            updateQuestion();
+        });
 
-        binding.trueButton.setOnClickListener(view -> checkAnswer(true));
+        binding.trueButton.setOnClickListener(view ->{
+            checkAnswer(true);
+            updateQuestion();
+        } );
     }
 
     private void checkAnswer(boolean userChoice) {
@@ -65,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
         int snackMessageId;
         if(userChoice == answer){
             snackMessageId = R.string.correct_answer;
+            fadeAnimation();
         }else{
             snackMessageId = R.string.incorrect_answer;
+            shakeAnimation();
         }
 
         Snackbar.make(binding.cardView,snackMessageId,Snackbar.LENGTH_SHORT)
@@ -82,5 +95,56 @@ public class MainActivity extends AppCompatActivity {
         String question = questionList.get(currentQuestionIndex).getAnswer();
         binding.questionTextview.setText(question);
         updateCounter((ArrayList<Question>) questionList);
+    }
+
+    private void shakeAnimation(){
+        Animation shake = AnimationUtils.loadAnimation(MainActivity.this,R.anim.shakeanimation);
+        binding.cardView.setAnimation(shake);
+        shake.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                binding.questionTextview.setTextColor(Color.RED);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                binding.questionTextview.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+    private void fadeAnimation(){
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f,0.0f);
+
+        alphaAnimation.setDuration(150);
+        alphaAnimation.setRepeatCount(1);
+        alphaAnimation.setRepeatMode(Animation.REVERSE);
+
+
+        binding.cardView.setAnimation(alphaAnimation);
+
+
+        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                binding.questionTextview.setTextColor(Color.GREEN);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                binding.questionTextview.setTextColor(Color.WHITE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 }
