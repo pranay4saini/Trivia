@@ -18,21 +18,27 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.transition.ScaleProvider;
 import com.pranay.trivia.controller.AppController;
 import com.pranay.trivia.data.Repository;
 import com.pranay.trivia.data.answerListAsyncResponse;
 import com.pranay.trivia.databinding.ActivityMainBinding;
 import com.pranay.trivia.model.Question;
+import com.pranay.trivia.model.Score;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    private int ScoreCounter =0;
+    private Score score;
 
     private ActivityMainBinding binding;
     private int currentQuestionIndex = 0;
@@ -43,8 +49,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        score = new Score();
+
+
+
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        binding.scoreTextView.setText(MessageFormat.format("Current Score: {0}", String.valueOf(score.getScore())));
 
         questionList = new  Repository().getQuestions(questionArrayList ->{
                 binding.questionTextview.setText(questionArrayList.get(currentQuestionIndex).getAnswer());
@@ -77,9 +88,11 @@ public class MainActivity extends AppCompatActivity {
         if(userChoice == answer){
             snackMessageId = R.string.correct_answer;
             fadeAnimation();
+            addScore();
         }else{
             snackMessageId = R.string.incorrect_answer;
             shakeAnimation();
+            deductScore();
         }
 
         Snackbar.make(binding.cardView,snackMessageId,Snackbar.LENGTH_SHORT)
@@ -146,5 +159,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void deductScore(){
+        if(ScoreCounter>0){
+            ScoreCounter -=100;
+            score.setScore(ScoreCounter);
+            binding.scoreTextView.setText(MessageFormat.format("Current Score: {0}", String.valueOf(score.getScore())));
+        }else {
+            ScoreCounter =0;
+            score.setScore(ScoreCounter);
+        }
+    }
+    private void addScore(){
+        ScoreCounter += 100;
+        score.setScore(ScoreCounter);
+        binding.scoreTextView.setText(MessageFormat.format("Current Score: {0}", String.valueOf(score.getScore())));
     }
 }
