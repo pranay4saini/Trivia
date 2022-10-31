@@ -42,9 +42,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         score = new Score();
         prefs = new Prefs(MainActivity.this);
-
+        currentQuestionIndex = prefs.getState();
 
 
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         binding.scoreTextView.setText(MessageFormat.format("Current Score: {0}", String.valueOf(score.getScore())));
 
+        binding.highScoreTextView.setText(MessageFormat.format("Highest Score:  {0}",String.valueOf(prefs.getHighestScore())));
 
         questionList = new  Repository().getQuestions(questionArrayList ->{
                 binding.questionTextview.setText(questionArrayList.get(currentQuestionIndex).getAnswer());
@@ -61,11 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        binding.nextButton.setOnClickListener(view -> {
-            currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
-            updateQuestion();
-
-        });
+        binding.nextButton.setOnClickListener(view -> getNextQuestion());
 
         binding.falseButton.setOnClickListener(view -> {
             checkAnswer(false);
@@ -76,6 +74,11 @@ public class MainActivity extends AppCompatActivity {
             checkAnswer(true);
             updateQuestion();
         } );
+    }
+
+    private void getNextQuestion() {
+        currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
+        updateQuestion();
     }
 
     private void checkAnswer(boolean userChoice) {
@@ -119,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 binding.questionTextview.setTextColor(Color.WHITE);
+                getNextQuestion();
             }
 
             @Override
@@ -149,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAnimationEnd(Animation animation) {
 
                 binding.questionTextview.setTextColor(Color.WHITE);
+                getNextQuestion();
             }
 
             @Override
@@ -177,7 +182,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         prefs.saveHighestScore(score.getScore());
-        binding.highScoreTextView.setText(MessageFormat.format("Highest Score:  {0}",String.valueOf(prefs.getHighestScore())));
+        prefs.saveState(currentQuestionIndex);
         super.onPause();
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        prefs.saveState(currentQuestionIndex);
+        super.onDestroy();
     }
 }
