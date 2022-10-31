@@ -5,31 +5,23 @@ import androidx.databinding.DataBindingUtil;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.CalendarContract;
-import android.util.Log;
-import android.view.View;
+
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
+
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.transition.ScaleProvider;
-import com.pranay.trivia.controller.AppController;
+
+import com.pranay.trivia.Utils.Prefs;
+
 import com.pranay.trivia.data.Repository;
-import com.pranay.trivia.data.answerListAsyncResponse;
+
 import com.pranay.trivia.databinding.ActivityMainBinding;
 import com.pranay.trivia.model.Question;
 import com.pranay.trivia.model.Score;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private int currentQuestionIndex = 0;
     List<Question> questionList;
+    private Prefs prefs;
 
 
     @Override
@@ -50,12 +43,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         score = new Score();
+        prefs = new Prefs(MainActivity.this);
+
 
 
 
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         binding.scoreTextView.setText(MessageFormat.format("Current Score: {0}", String.valueOf(score.getScore())));
+
 
         questionList = new  Repository().getQuestions(questionArrayList ->{
                 binding.questionTextview.setText(questionArrayList.get(currentQuestionIndex).getAnswer());
@@ -68,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         binding.nextButton.setOnClickListener(view -> {
             currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
             updateQuestion();
+
         });
 
         binding.falseButton.setOnClickListener(view -> {
@@ -175,5 +172,12 @@ public class MainActivity extends AppCompatActivity {
         ScoreCounter += 100;
         score.setScore(ScoreCounter);
         binding.scoreTextView.setText(MessageFormat.format("Current Score: {0}", String.valueOf(score.getScore())));
+    }
+
+    @Override
+    protected void onPause() {
+        prefs.saveHighestScore(score.getScore());
+        binding.highScoreTextView.setText(MessageFormat.format("Highest Score:  {0}",String.valueOf(prefs.getHighestScore())));
+        super.onPause();
     }
 }

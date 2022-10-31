@@ -104,14 +104,14 @@
             app:layout_constraintTop_toBottomOf="@+id/title_textview" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/high_score_textView"
             style="@style/MainScoreTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Highest"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.807"
+            app:layout_constraintHorizontal_bias="0.714"
             app:layout_constraintStart_toEndOf="@+id/text_View_out_of"
             app:layout_constraintTop_toBottomOf="@+id/score_textView" />
 
